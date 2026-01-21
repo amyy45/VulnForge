@@ -1,0 +1,65 @@
+# =========================
+# Python
+# =========================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+.eggs/
+
+# Virtual environments
+venv/
+.env/
+.envrc/
+
+# =========================
+# OS / Editor
+# =========================
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# =========================
+# Tool Outputs (Sensitive)
+# =========================
+*.log
+*.sqlite
+*.db
+
+# =========================
+# Recon / Scan Artifacts
+# =========================
+nmap_scan_*.xml
+nmap_scan_*.txt
+hydra_*.txt
+nikto_*.txt
+
+# =========================
+# Reports (Keep Samples Only)
+# =========================
+reports/html/*
+reports/markdown/*
+!reports/html/.keep
+!reports/markdown/.keep
+
+# =========================
+# Screenshots (Optional)
+# =========================
+screenshots/*
+!screenshots/.keep
+
+# =========================
+# Targets & Secrets
+# =========================
+targets/*.json
+config/secrets.py
+
+# =========================
+# Frontend (If Added Later)
+# =========================
+node_modules/
+dist/
+build/
