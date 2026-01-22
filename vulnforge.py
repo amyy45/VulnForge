@@ -4,6 +4,8 @@ from colorama import Fore, Style
 from core.recon import run_nmap_scan, detect_http_services
 from core.config import validate_target
 
+from exploits.weak_creds import spray_ftp
+
 
 def main():
     parser = argparse.ArgumentParser(
@@ -57,6 +59,21 @@ def main():
             )
     else:
         print(Fore.YELLOW + "\n[!] No web services detected" + Style.RESET_ALL)
+
+    # -----------------------
+    # Credential Attack Phase
+    # -----------------------
+    creds = spray_ftp(target)
+
+    if creds:
+        print(
+            Fore.RED +
+            f"\n[+] AUTHENTICATED ACCESS CONFIRMED → "
+            f"{creds['service']} | {creds['username']}:{creds['password']}"
+            + Style.RESET_ALL
+        )
+    else:
+        print(Fore.YELLOW + "\n[!] No valid credentials found" + Style.RESET_ALL)
 
 
 if __name__ == "__main__":
