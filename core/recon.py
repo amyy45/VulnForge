@@ -1,5 +1,6 @@
 import nmap
 import json
+import requests
 
 def run_nmap_scan(target: str):
     scanner = nmap.PortScanner()
@@ -29,3 +30,25 @@ def run_nmap_scan(target: str):
             })
 
     return results
+
+def detect_http_services(recon_results, target):
+    web_services = []
+
+    for entry in recon_results:
+        if entry["service"] in ["http", "https"]:
+            port = entry["port"]
+            url = f"http://{target}:{port}"
+
+            try:
+                r = requests.get(url, timeout=5)
+                web_services.append({
+                    "port": port,
+                    "url": url,
+                    "status_code": r.status_code,
+                    "server": r.headers.get("Server"),
+                    "x_powered_by": r.headers.get("X-Powered-By")
+                })
+            except requests.RequestException:
+                continue
+
+    return web_services
