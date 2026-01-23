@@ -41,7 +41,7 @@ nikto_*.txt
 # Reports (Keep Samples Only)
 # =========================
 reports/html/*
-reports/markdown/*
+!reports/markdown/*.md
 !reports/html/.keep
 !reports/markdown/.keep
 

