@@ -6,6 +6,7 @@ from core.config import validate_target
 
 from exploits.weak_creds import spray_ftp
 from exploits.ftp_access import validate_ftp_access
+from exploits.bindshell_rce import exploit_bindshell
 
 def main():
     parser = argparse.ArgumentParser(
@@ -38,10 +39,9 @@ def main():
 
     print(Fore.CYAN + "\n[+] Recon Results:" + Style.RESET_ALL)
     for r in recon_results:
-        print(
-            f"  - {r['protocol'].upper()} {r['port']} | "
-            f"{r['service']} {r.get('product','')} {r.get('version','')}"
-        )
+        print(Style.DIM + f"  - {r['protocol'].upper()} {r['port']} | "
+            f"{r['service']} {r.get('product','')} {r.get('version','')}" 
+            + Style.RESET_ALL)
 
     # -----------------------
     # Web Surface Detection
@@ -67,13 +67,13 @@ def main():
 
     if creds:
         print(
-            Fore.RED +
+            Fore.GREEN +
             f"\n[+] AUTHENTICATED ACCESS CONFIRMED → "
             f"{creds['service']} | {creds['username']}:{creds['password']}"
             + Style.RESET_ALL
         )
     else:
-        print(Fore.YELLOW + "\n[!] No valid credentials found" + Style.RESET_ALL)
+        print(Fore.RED + "\n[!] No valid credentials found" + Style.RESET_ALL)
     
     # -----------------------
     # Exploit Validation Phase
@@ -87,13 +87,27 @@ def main():
 
         if access:
             print(
-                Fore.RED +
+                Fore.GREEN +
                 "\n[+] FTP ACCESS CONFIRMED — FILE SYSTEM LISTING:" +
                 Style.RESET_ALL
             )
             for f in access["files"]:
                 print(f"  - {f}")
+    
+    # -----------------------
+    # Controlled RCE Phase
+    # -----------------------
+    rce_output = exploit_bindshell(target)
 
+    if rce_output:
+        print(
+            Fore.GREEN +
+            "\n[!!!] REMOTE COMMAND EXECUTION CONFIRMED (ROOT)" +
+            Style.RESET_ALL
+        )
+        print(f"[RCE OUTPUT] {rce_output}")
+    else:
+        print(Fore.RED + "\n[!] RCE attempt unsuccessful" + Style.RESET_ALL)
 
 
 if __name__ == "__main__":
