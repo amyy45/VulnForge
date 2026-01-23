@@ -5,7 +5,7 @@ from core.recon import run_nmap_scan, detect_http_services
 from core.config import validate_target
 
 from exploits.weak_creds import spray_ftp
-
+from exploits.ftp_access import validate_ftp_access
 
 def main():
     parser = argparse.ArgumentParser(
@@ -74,6 +74,26 @@ def main():
         )
     else:
         print(Fore.YELLOW + "\n[!] No valid credentials found" + Style.RESET_ALL)
+    
+    # -----------------------
+    # Exploit Validation Phase
+    # -----------------------
+    if creds and creds["service"] == "ftp":
+        access = validate_ftp_access(
+            target,
+            creds["username"],
+            creds["password"]
+        )
+
+        if access:
+            print(
+                Fore.RED +
+                "\n[+] FTP ACCESS CONFIRMED — FILE SYSTEM LISTING:" +
+                Style.RESET_ALL
+            )
+            for f in access["files"]:
+                print(f"  - {f}")
+
 
 
 if __name__ == "__main__":
