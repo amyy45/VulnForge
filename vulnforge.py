@@ -23,7 +23,6 @@ def main():
     args = parser.parse_args()
     target = args.target
 
-    # Scope / target validation
     if not validate_target(target):
         print(Fore.RED + "[-] Invalid target. Only IP addresses allowed." + Style.RESET_ALL)
         return
